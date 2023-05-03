@@ -14,6 +14,22 @@
                 </div>
             </div>
         </section>
+
+        <section>
+            <% if (comments.length > 0) { %>
+                <h3 class="mt-4">Comments</h3>
+                <div class="overflow-hidden rounded-lg bg-white shadow px-4 mt-4">
+                    <ul>
+                        <% comments.forEach(comment => { %>
+                            <li class="py-2">
+                                <p class="mt-1 text-xs text-gray-500"><%= moment(comment.created_at).fromNow() %></p>
+                                <p class="text-sm max-w-2xl"><%= comment.content %></p>
+                            </li>
+                        <% }); %>
+                    </ul>
+                </div>
+            <% } %>
+        </section>
     </div>
 </div>
 
@@ -23,9 +39,10 @@
             <div class="p-6">
                 <h1 class="text-lg">Kommentera <%= post.title %></h1>
 
-                <form action="">
+                <form action="/comments" method="post">
                     <input type="hidden" name="postId" value="<%= post.id %>">
-                    <textarea name="" id="" class="mt-4 w-full p-5 border-0 bg-slate-100 rounded text-sm"></textarea>
+                    <textarea name="content" id="" class="mt-4 w-full p-5 border-0 bg-slate-100 rounded text-sm"></textarea>
+                    <button class="bg-blue-400 text-white py-2 px-4 rounded-lg" type="submit">Skicka</button>
                 </form>
             </div>
         </div>

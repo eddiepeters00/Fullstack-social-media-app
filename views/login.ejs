@@ -3,6 +3,17 @@
 
     <div class="h-screen w-full flex items-center justify-center">
         <div class="">
+
+            <% if (message.length > 0) { %>
+                <div class="bg-yellow-100 p-10 mb-20">
+                    <ul>
+                        <% message.forEach(msg => { %>
+                            <li><%= msg %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+            <% } %>
+            
             <div class="flex justify-center">
                 <svg class="w-40" viewBox="0 0 237 148" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M68 34C68 52.7777 52.7777 68 34 68C15.2223 68 0 52.7777 0 34C0 15.2223 15.2223 0 34 0C52.7777 0 68 15.2223 68 34Z" fill="#FF006E" fill-opacity="0.4"/>

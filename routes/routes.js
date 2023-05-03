@@ -40,7 +40,10 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-    res.render('login')
+    const data = {
+        message: req.flash('message')
+    }
+    res.render('login', data);
 })
 
 router.post('/login', (req, res) => {
@@ -58,7 +61,8 @@ router.post('/login', (req, res) => {
             req.flash('message', 'You are now logged in.');
             res.redirect('/dashboard');
         }else{
-            res.send('Found no users')
+            req.flash('message', 'Please enter the correct email or password');
+            res.redirect('/login');
         }
 
     });
@@ -88,5 +92,28 @@ router.post('/users', (req, res) => {
         res.redirect('/dashboard');
     });
 });
+
+// PROFILE
+router.get('/profile', (req, res) =>{
+    console.log(req.session);
+    const username = req.session.username;
+    const values = [username];
+
+    db.query(`SELECT * FROM users WHERE name = ?`, values, (err, results) =>{
+        if (err) {
+            console.error('Error finding user: ', err);
+            res.status(500).send('Error finding user');
+            return;
+        }
+        console.log(results[0]);
+        const data = {
+            username: results[0].name,
+            email: results[0].email
+        }
+        res.render('profile', data);
+    })
+});
+
+
 
 module.exports = router;

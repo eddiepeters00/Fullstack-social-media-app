@@ -2,14 +2,14 @@ const db = require('./../db_connection');
 
 class Post {
 
-    constructor({id, title, slug, content}) {
+    constructor({ id, title, slug, content }) {
         this.id = id;
         this.title = title;
         this.slug = slug;
         this.content = content;
     }
 
-    static async  getBySlug(slug) {
+    static async getBySlug(slug) {
 
         return new Promise((resolve, reject) => {
             const sql = 'SELECT * FROM posts WHERE slug = ?';
@@ -17,10 +17,10 @@ class Post {
             db.query(sql, values, function (error, results, fields) {
                 if (error) {
                     reject(error)
-                }else{
-                    if(results.length > 0){
+                } else {
+                    if (results.length > 0) {
                         resolve(results)
-                    }else{
+                    } else {
                         reject(new Error('None found'))
                     }
                 }
@@ -28,15 +28,15 @@ class Post {
         })
     }
 
-    static async  getAll() {
+    static async getAll() {
         return new Promise((resolve, reject) => {
             db.query('SELECT * FROM posts', function (error, results, fields) {
                 if (error) {
                     reject(error)
-                }else{
-                    if(results.length > 0){
+                } else {
+                    if (results.length > 0) {
                         resolve(results)
-                    }else{
+                    } else {
                         reject(new Error('None found'))
                     }
                 }
@@ -45,7 +45,7 @@ class Post {
     }
 
 
-    async create(){
+    async create() {
         const sql = `
             INSERT INTO posts
                 (user_id, title, slug, content)

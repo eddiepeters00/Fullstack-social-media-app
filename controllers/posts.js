@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const slugify = require('slugify');
+const authMiddleware = require('./../middlewares/auth');
 
 const Post = require('./../models/posts');
+const Comment = require('./../models/comments');
+
 
 // Get all posts
 router.get('/posts', async (req, res) => {
@@ -20,10 +23,17 @@ router.get('/posts', async (req, res) => {
 });
 
 
-// CREATE
-router.get('/posts/create', (req, res) => {
-    res.render('posts/create')
-})
+// CREATE POST
+router.get('/create', authMiddleware,(req, res) =>{
+    if(req.isAuthenticated){
+        res.render('posts/create');
+    }
+    else{
+        res.redirect('/login');
+    }
+});
+
+
 
 router.post('/posts', async (req, res) => {
     try {
@@ -39,18 +49,37 @@ router.post('/posts', async (req, res) => {
     }
 })
 
+
+// CREATE COMMENT
+router.post('/comments', async (req, res) => {
+    try {
+      const content = req.body.content;
+      const post_id = req.body.postId;
+      const comment = new Comment({ post_id, content });
+      await comment.create();
+      console.log(comment);
+      res.redirect(req.get('referer'));
+    }
+    catch (err) {
+      res.send(err);
+    }
+  });
+  
+
 // READ
 router.get('/posts/slug/:slug', async (req, res) => {
     const slug = req.params.slug;
-
+    
     try {
         const [post] = await Post.getBySlug(slug);
 
-        // VG TODO
-        // Get Comments
+        // VG
+        const postId = post.id;
+        const comments = await Comment.getByPostId(postId);
 
         res.render('posts/show', {
-            post: post
+            post: post,
+            comments: comments
         })
     } catch (err) {
         res.status(500).json({
